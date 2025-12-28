@@ -549,9 +549,17 @@ class CorradeInventorySorter:
     def sort_folder(
         self,
         source_path: str,
-        recursive: bool = True
+        recursive: bool = False,
+        sort_folders: bool = True
     ):
-        """Sort items in a folder according to rules."""
+        """
+        Sort items in a folder according to rules.
+        
+        Args:
+            source_path: Path to folder to sort
+            recursive: Whether to recurse into subfolders
+            sort_folders: Whether to sort folders themselves (not just items inside)
+        """
         logger.info(f"Processing folder: {source_path}")
         
         # Normalize path
@@ -567,38 +575,61 @@ class CorradeInventorySorter:
         batch_count = 0
         
         for item in items:
-            # Skip system folders if this is a folder
-            if item.item_type.lower() == 'folder':
-                if self.is_system_folder(item.name):
-                    logger.debug(f"Skipping system folder: {item.name}")
-                    self.skipped_count += 1
-                    continue
-                
-                # Recursively process subfolder
-                if recursive:
-                    subfolder_path = f"{full_path}/{item.name}"
-                    self.sort_folder(subfolder_path, recursive=True)
+            # Skip system folders
+            if self.is_system_folder(item.name):
+                logger.debug(f"Skipping system folder: {item.name}")
+                self.skipped_count += 1
                 continue
             
-            # Find matching rule using normalized name
+            # For folders: check if they match any rules (product folders)
+            if item.item_type.lower() == 'folder':
+                if sort_folders:
+                    # Try to match folder name against rules
+                    rule = self.find_matching_rule(item.name)
+                    
+                    if rule:
+                        target_path = self.ensure_folder_exists(rule.target_path)
+                        
+                        if target_path:
+                            item_source_path = f"{full_path}/{item.name}"
+                            
+                            if self.move_item(item_source_path, target_path, item.name):
+                                self.moved_count += 1
+                                batch_count += 1
+                                logger.info(f"  Matched rule: {rule.name}")
+                                
+                                time.sleep(self.delay)
+                                
+                                if batch_count >= self.batch_size:
+                                    logger.info(f"Batch complete ({self.batch_size} items), pausing {self.batch_delay}s...")
+                                    time.sleep(self.batch_delay)
+                                    batch_count = 0
+                            else:
+                                self.error_count += 1
+                        continue
+                
+                # Recursively process if enabled and didn't match/move
+                if recursive:
+                    subfolder_path = f"{full_path}/{item.name}"
+                    self.sort_folder(subfolder_path, recursive=True, sort_folders=sort_folders)
+                continue
+            
+            # For non-folder items: match and move
             rule = self.find_matching_rule(item.name)
             
             if rule:
-                # Ensure target folder exists
                 target_path = self.ensure_folder_exists(rule.target_path)
                 
                 if target_path:
-                    # Build source path for the item
                     item_source_path = f"{full_path}/{item.name}"
                     
                     if self.move_item(item_source_path, target_path, item.name):
                         self.moved_count += 1
                         batch_count += 1
+                        logger.info(f"  Matched rule: {rule.name}")
                         
-                        # Delay between moves
                         time.sleep(self.delay)
                         
-                        # Batch pause
                         if batch_count >= self.batch_size:
                             logger.info(f"Batch complete ({self.batch_size} items), pausing {self.batch_delay}s...")
                             time.sleep(self.batch_delay)
