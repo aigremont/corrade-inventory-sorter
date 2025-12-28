@@ -331,183 +331,202 @@ class CorradeInventorySorter:
         if folder_path in self.folder_uuid_cache:
             return self.folder_uuid_cache[folder_path]
         
+        # Corrade uses path= with inventory command to access folders
+        # We'll extract UUID from a successful listing
+        full_path = folder_path if folder_path.startswith('/') else f'/My Inventory/{folder_path}'
+        
         result = self._send_command(
-            command='getinventorypath',
-            path=folder_path
+            command='inventory',
+            action='ls',
+            path=full_path
         )
         
         if result.get('success', '').lower() == 'true':
-            uuid = result.get('data', '')
-            if uuid:
-                self.folder_uuid_cache[folder_path] = uuid
-                self.folder_path_cache[uuid] = folder_path
-                return uuid
+            # If listing succeeded, the folder exists - use path as identifier
+            self.folder_uuid_cache[folder_path] = full_path
+            self.folder_path_cache[full_path] = folder_path
+            return full_path
         
         return None
     
-    def get_folder_contents_by_uuid(
+    def _parse_inventory_data(self, data: str, parent_path: str = "") -> list[InventoryItem]:
+        """
+        Parse Corrade's inventory CSV format.
+        Format: name,<value>,item,<uuid>,type,<type>,permissions,<perms>,time,<time>,...
+        """
+        items = []
+        if not data:
+            return items
+        
+        # Split by comma and parse field-value pairs
+        parts = [p.strip() for p in data.split(',')]
+        
+        i = 0
+        current_item = {}
+        while i < len(parts) - 1:
+            field = parts[i].lower()
+            value = parts[i + 1]
+            
+            # Remove quotes from value if present
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1]
+            elif value.startswith('"'):
+                # Handle multi-part quoted values
+                value = value[1:]
+                i += 2
+                while i < len(parts) and not parts[i-1].endswith('"'):
+                    value += ',' + parts[i]
+                    i += 1
+                if value.endswith('"'):
+                    value = value[:-1]
+                continue
+            
+            if field == 'name':
+                # Start of new item - save previous if exists
+                if current_item.get('name') and current_item.get('uuid'):
+                    items.append(InventoryItem(
+                        uuid=current_item['uuid'],
+                        name=urllib.parse.unquote_plus(current_item['name']),
+                        item_type=current_item.get('type', 'Unknown'),
+                        parent_uuid=parent_path
+                    ))
+                current_item = {'name': value}
+            elif field == 'item':
+                current_item['uuid'] = value
+            elif field == 'type':
+                current_item['type'] = value
+            
+            i += 2
+        
+        # Don't forget the last item
+        if current_item.get('name') and current_item.get('uuid'):
+            items.append(InventoryItem(
+                uuid=current_item['uuid'],
+                name=urllib.parse.unquote_plus(current_item['name']),
+                item_type=current_item.get('type', 'Unknown'),
+                parent_uuid=parent_path
+            ))
+        
+        # Cache names
+        for item in items:
+            self.uuid_name_cache[item.uuid] = item.name
+        
+        return items
+    
+    def get_folder_contents_by_path(
         self,
-        folder_uuid: str,
+        folder_path: str,
         force_refresh: bool = False
     ) -> list[InventoryItem]:
-        """Get contents of a folder by UUID for better performance."""
+        """Get contents of a folder by path."""
+        full_path = folder_path if folder_path.startswith('/') else f'/My Inventory/{folder_path}'
+        
         params = {
             'command': 'inventory',
             'action': 'ls',
-            'folder': folder_uuid,  # Use UUID instead of path
+            'path': full_path,
         }
-        if force_refresh or self.force_cache_refresh:
-            params['cache'] = 'force'
         
         result = self._send_command(**params)
         
         if result.get('success', '').lower() != 'true':
             error = result.get('error', 'Unknown error')
-            logger.error(f"Failed to list folder UUID {folder_uuid}: {error}")
+            logger.error(f"Failed to list folder {folder_path}: {error}")
             return []
         
-        # Parse the inventory data
-        items = []
-        data = result.get('data', '')
-        if data:
-            # Corrade returns CSV-like format: name,uuid,type
-            for line in data.split('\n'):
-                line = line.strip()
-                if line:
-                    parts = line.split(',')
-                    if len(parts) >= 3:
-                        item = InventoryItem(
-                            uuid=parts[1].strip(),
-                            name=parts[0].strip(),
-                            item_type=parts[2].strip(),
-                            parent_uuid=folder_uuid
-                        )
-                        # Cache the name for this UUID
-                        self.uuid_name_cache[item.uuid] = item.name
-                        items.append(item)
-        
-        return items
+        return self._parse_inventory_data(result.get('data', ''), full_path)
     
     def get_folder_contents(self, folder_path: str, force_refresh: bool = False) -> list[InventoryItem]:
-        """Get contents of a folder by path (uses UUID internally when possible)."""
-        # Try to get UUID first for better performance
-        folder_uuid = self.get_folder_uuid(folder_path)
-        
-        if folder_uuid:
-            return self.get_folder_contents_by_uuid(folder_uuid, force_refresh)
-        
-        # Fallback to path-based lookup
-        params = {
-            'command': 'inventory',
-            'action': 'ls',
-            'path': folder_path,
-        }
-        if force_refresh or self.force_cache_refresh:
-            params['cache'] = 'force'
-        
-        result = self._send_command(**params)
-        
-        if result.get('success', '').lower() != 'true':
-            logger.error(f"Failed to list folder {folder_path}: {result.get('error', 'Unknown error')}")
-            return []
-        
-        # Parse the inventory data
-        items = []
-        data = result.get('data', '')
-        if data:
-            for line in data.split('\n'):
-                line = line.strip()
-                if line:
-                    parts = line.split(',')
-                    if len(parts) >= 3:
-                        item = InventoryItem(
-                            uuid=parts[1].strip(),
-                            name=parts[0].strip(),
-                            item_type=parts[2].strip()
-                        )
-                        self.uuid_name_cache[item.uuid] = item.name
-                        items.append(item)
-        
-        return items
+        """Get contents of a folder by path."""
+        return self.get_folder_contents_by_path(folder_path, force_refresh)
     
     def ensure_folder_exists(self, path: str) -> Optional[str]:
-        """Ensure a folder path exists, creating if necessary. Returns UUID."""
-        # Check cache first
-        if path in self.folder_uuid_cache:
-            return self.folder_uuid_cache[path]
+        """Ensure a folder path exists, creating if necessary. Returns full path."""
+        # Build full path
+        full_path = path if path.startswith('/') else f'/My Inventory/{path}'
         
-        # Try to get existing folder
-        folder_uuid = self.get_folder_uuid(path)
-        if folder_uuid:
-            return folder_uuid
+        # Check cache first
+        if full_path in self.folder_uuid_cache:
+            return full_path
+        
+        # Try to list the folder to see if it exists
+        result = self._send_command(
+            command='inventory',
+            action='ls',
+            path=full_path
+        )
+        
+        if result.get('success', '').lower() == 'true':
+            # Folder exists
+            self.folder_uuid_cache[full_path] = full_path
+            return full_path
         
         # Need to create the folder - do it path segment by path segment
-        parts = path.split('/')
-        current_path = ""
-        parent_uuid = None
+        # Remove leading /My Inventory/ for processing
+        rel_path = path.replace('/My Inventory/', '').lstrip('/')
+        parts = [p for p in rel_path.split('/') if p]
+        
+        current_path = "/My Inventory"
         
         for part in parts:
-            parent_path = current_path
-            current_path = f"{current_path}/{part}" if current_path else part
+            next_path = f"{current_path}/{part}"
             
             # Check if this segment exists
-            segment_uuid = self.get_folder_uuid(current_path)
+            check_result = self._send_command(
+                command='inventory',
+                action='ls',
+                path=next_path
+            )
             
-            if not segment_uuid:
+            if check_result.get('success', '').lower() != 'true':
                 # Create this folder
-                logger.info(f"Creating folder: {current_path}")
+                logger.info(f"Creating folder: {next_path}")
                 
                 if not self.dry_run:
-                    create_params = {
-                        'command': 'inventory',
-                        'action': 'mkdir',
-                        'name': part,
-                    }
-                    
-                    # Use parent UUID if we have it, otherwise use path
-                    if parent_uuid:
-                        create_params['folder'] = parent_uuid
-                    elif parent_path:
-                        create_params['path'] = parent_path
-                    
-                    create_result = self._send_command(**create_params)
+                    create_result = self._send_command(
+                        command='inventory',
+                        action='mkdir',
+                        name=part,
+                        path=current_path
+                    )
                     
                     if create_result.get('success', '').lower() != 'true':
-                        logger.error(f"Failed to create folder {current_path}: {create_result.get('error', '')}")
+                        logger.error(f"Failed to create folder {next_path}: {create_result.get('error', '')}")
                         return None
                     
-                    # Get the UUID of newly created folder
                     time.sleep(0.5)  # Brief delay for SL to process
-                    segment_uuid = self.get_folder_uuid(current_path)
                 else:
-                    logger.info(f"[DRY RUN] Would create folder: {current_path}")
-                    segment_uuid = f"dry-run-uuid-{current_path}"  # Placeholder
+                    logger.info(f"[DRY RUN] Would create folder: {next_path}")
             
-            parent_uuid = segment_uuid
+            current_path = next_path
         
-        if parent_uuid:
-            self.folder_uuid_cache[path] = parent_uuid
-        
-        return parent_uuid
+        self.folder_uuid_cache[full_path] = full_path
+        return full_path
     
-    def move_item_by_uuid(self, item_uuid: str, target_folder_uuid: str, item_name: str = "") -> bool:
-        """Move an inventory item by UUID for better performance."""
-        display_name = item_name or self.uuid_name_cache.get(item_uuid, item_uuid)
-        target_path = self.folder_path_cache.get(target_folder_uuid, target_folder_uuid)
+    def move_item(self, source_path: str, target_folder_path: str, item_name: str = "") -> bool:
+        """
+        Move an inventory item using source and target paths.
+        Per Corrade API: action=mv, source=<path>, target=<folder path>
+        """
+        display_name = item_name or source_path.split('/')[-1]
+        
+        # Ensure target path is absolute
+        if not target_folder_path.startswith('/'):
+            target_folder_path = f'/My Inventory/{target_folder_path}'
         
         if self.dry_run:
-            logger.info(f"[DRY RUN] Would move '{display_name}' -> {target_path}")
+            logger.info(f"[DRY RUN] Would move '{display_name}' -> {target_folder_path}")
             return True
         
         result = self._send_command(
             command='inventory',
             action='mv',
-            item=item_uuid,        # UUID of item to move
-            folder=target_folder_uuid  # UUID of target folder
+            source=source_path,
+            target=target_folder_path
         )
         
         if result.get('success', '').lower() == 'true':
-            logger.info(f"Moved '{display_name}' -> {target_path}")
+            logger.info(f"Moved '{display_name}' -> {target_folder_path}")
             return True
         else:
             error = result.get('error', 'Unknown')
@@ -530,25 +549,16 @@ class CorradeInventorySorter:
     def sort_folder(
         self,
         source_path: str,
-        recursive: bool = True,
-        source_uuid: str = None
+        recursive: bool = True
     ):
         """Sort items in a folder according to rules."""
         logger.info(f"Processing folder: {source_path}")
         
-        # Get folder UUID for better performance
-        if not source_uuid:
-            source_uuid = self.get_folder_uuid(source_path)
+        # Normalize path
+        full_path = source_path if source_path.startswith('/') else f'/My Inventory/{source_path}'
         
-        if not source_uuid:
-            logger.error(f"Could not find folder: {source_path}")
-            return
-        
-        # Force refresh to get current state
-        items = self.get_folder_contents_by_uuid(
-            source_uuid,
-            force_refresh=True
-        )
+        # Get folder contents
+        items = self.get_folder_contents_by_path(full_path)
         
         if not items:
             logger.info(f"No items found in {source_path}")
@@ -566,23 +576,22 @@ class CorradeInventorySorter:
                 
                 # Recursively process subfolder
                 if recursive:
-                    subfolder_path = f"{source_path}/{item.name}"
-                    self.sort_folder(
-                        subfolder_path,
-                        recursive=True,
-                        source_uuid=item.uuid
-                    )
+                    subfolder_path = f"{full_path}/{item.name}"
+                    self.sort_folder(subfolder_path, recursive=True)
                 continue
             
             # Find matching rule using normalized name
             rule = self.find_matching_rule(item.name)
             
             if rule:
-                # Ensure target folder exists and get its UUID
-                target_uuid = self.ensure_folder_exists(rule.target_path)
+                # Ensure target folder exists
+                target_path = self.ensure_folder_exists(rule.target_path)
                 
-                if target_uuid:
-                    if self.move_item_by_uuid(item.uuid, target_uuid, item.name):
+                if target_path:
+                    # Build source path for the item
+                    item_source_path = f"{full_path}/{item.name}"
+                    
+                    if self.move_item(item_source_path, target_path, item.name):
                         self.moved_count += 1
                         batch_count += 1
                         
