@@ -358,7 +358,13 @@ class CorradeInventorySorter:
                 name="BDSM Brands",
                 target_path="BDSM",
                 # Note: \* escapes literal asterisks, brands often use *Brand* or ~Brand~ patterns
-                matcher=regex_matcher(r'(\*HDM\*|HDM|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|Erica.s corner|LnB|BioDoll)'),
+                matcher=regex_matcher(r'(\*HDM\*|HDM|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
+                priority=87
+            ),
+            SortRule(
+                name="BDSM Corsets",
+                target_path="BDSM/Clothing/Corsets",
+                matcher=regex_matcher(r'(Ava.s Lewd|LUNAFELL|Erica.s corner).*corset'),
                 priority=87
             ),
             SortRule(
@@ -369,6 +375,14 @@ class CorradeInventorySorter:
                     'open body', 'polyform latex'
                 ]),
                 priority=86
+            ),
+            
+            # Whips/Crops to Accessories (not BDSM restraints)
+            SortRule(
+                name="Whips",
+                target_path="Clothing/Accessories",
+                matcher=keyword_matcher(['whip', 'crop', 'riding crop']),
+                priority=85
             ),
             
             # Animation Overrides - goes to system folder
@@ -429,11 +443,19 @@ class CorradeInventorySorter:
                 priority=70
             ),
             
+            # Hosiery - specific subcategory
+            SortRule(
+                name="Hosiery",
+                target_path="Clothing/Hosiery",
+                matcher=regex_matcher(r'(FACS|Pantyhose|Stockings|Tights|Hose|Hosiery)'),
+                priority=71
+            ),
+            
             # Clothing Brands
             SortRule(
                 name="Clothing Brands",
                 target_path="Clothing",
-                matcher=regex_matcher(r'(AVEC TOI|VELOUR|erratic|FACS|Blueberry|Addams|Scandalize)'),
+                matcher=regex_matcher(r'(AVEC TOI|erratic|Blueberry|Addams|Scandalize)'),
                 priority=69
             ),
             
@@ -471,7 +493,7 @@ class CorradeInventorySorter:
             SortRule(
                 name="Skins",
                 target_path="Body Parts/Skins",
-                matcher=regex_matcher(r'(Skin|Pepe Skins|OMY|2faces|Deetalez|Glam Affair|Pink Fuel|Session|TheSkinnery|Not Found)'),
+                matcher=regex_matcher(r'(Pepe Skins|OMY|2faces|Deetalez|Glam Affair|Pink Fuel|Session|TheSkinnery|Not Found|VELOUR.*Body|Ipanema Body)'),
                 priority=62
             ),
             

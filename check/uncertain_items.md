@@ -2,18 +2,18 @@
 
 Items from the inventory that I'm unsure how to categorize. Please indicate where each should go.
 
+## RESOLVED (from user feedback)
+
+| Item | Destination | Notes |
+|------|-------------|-------|
+| `Ava's Lewd: Frame corset (wear me)` | BDSM/Clothing/Corsets | ✅ Corset brand rule added |
+| `[LUNAFELL] - Eclipse Corset - FULLPACK` | BDSM/Clothing/Corsets | ✅ Corset brand rule added |
+| `[Erica's corner] Velatrix corset and whip PBR` | BDSM/Clothing/Corsets (corset), Clothing/Accessories (whip) | ✅ Split rules added |
+| `Latex` (folder) | Materials | ✅ Contains Heavy Latex & Smooth Latex materials |
+| `FACS - Custom Hose Modular Pantyhose FULL 1.3 2K Update` | Clothing/Hosiery | ✅ Hosiery rule added |
+| `VELOUR: The "Ipanema Body" for Maitreya (BLUSH)` | Body Parts/Skins | ✅ Body skin, not clothing |
+
 ## Category Uncertain
-
-### Could be BDSM or Clothing?
-
-| Item | My Best Guess | Notes |
-|------|---------------|-------|
-| `Ava's Lewd: Frame corset (wear me)` | BDSM? | Corset - could be fashion or kink |
-| `[LUNAFELL] - Eclipse Corset - FULLPACK` | BDSM? | Another corset |
-| `[Erica's corner] Velatrix corset and whip PBR` | BDSM | Has "whip" so probably BDSM |
-| `Latex` (folder) | BDSM? | Generic latex folder - fashion or kink? |
-| `FACS - Custom Hose Modular Pantyhose FULL 1.3 2K Update` | Clothing | Pantyhose/hosiery |
-| `VELOUR: The "Ipanema Body" for Maitreya (BLUSH)` | Body Parts? | Body shape/deformer? Or clothing? |
 
 ### Could be Clothing or Accessories?
 
