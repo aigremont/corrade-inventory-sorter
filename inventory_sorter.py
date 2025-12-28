@@ -141,6 +141,106 @@ def extract_brand_from_name(name: str) -> Optional[str]:
     return None
 
 
+def extract_product_name(folder_name: str, brand: str = None) -> Optional[str]:
+    """
+    Extract product name from a folder name.
+    E.g., "Magika - Sadie Hair" -> "Sadie"
+    """
+    normalized = normalize_folder_name(folder_name)
+    
+    # Remove brand prefix if known
+    if brand:
+        # Pattern: "Brand - Product ..." or "Brand :: Product ..."
+        pattern = rf'^{re.escape(brand)}\s*[-–—:]+\s*'
+        normalized = re.sub(pattern, '', normalized, flags=re.IGNORECASE)
+    
+    # Remove common suffixes like "Hair", "Skin", "(BOX)", etc.
+    normalized = re.sub(r'\s*(Hair|Skin|Head|Body|Eyes|Shape|\(BOX\)|\(boxed\)|boxed|box)\s*$', '', normalized, flags=re.IGNORECASE)
+    
+    # Remove version numbers
+    normalized = re.sub(r'\s*v?\d+\.?\d*\s*$', '', normalized, flags=re.IGNORECASE)
+    
+    # Clean up any remaining artifacts
+    normalized = re.sub(r'\s*[-–—:]+\s*$', '', normalized)
+    
+    return normalized.strip() if normalized.strip() else None
+
+
+def detect_item_subfolder(item_name: str) -> str:
+    """
+    Detect what subfolder an item should go into based on its name.
+    For CTS Wardrobe compatibility.
+    
+    Returns subfolder name like 'Hair', 'HUDs', 'Skin', etc.
+    """
+    name_lower = item_name.lower()
+    
+    # HUDs
+    if 'hud' in name_lower:
+        return 'HUDs'
+    
+    # Hair
+    if 'hair' in name_lower and 'chair' not in name_lower:
+        return 'Hair'
+    
+    # Skin
+    if 'skin' in name_lower:
+        return 'Skin'
+    
+    # Shape
+    if 'shape' in name_lower:
+        return 'Shape'
+    
+    # Eyes
+    if 'eye' in name_lower and 'eyeshadow' not in name_lower:
+        return 'Eyes'
+    
+    # Head
+    if 'head' in name_lower:
+        return 'Head'
+    
+    # Body
+    if 'body' in name_lower:
+        return 'Body'
+    
+    # Animations/AO
+    if 'animation' in name_lower or ' ao ' in name_lower or name_lower.endswith(' ao'):
+        return 'Animations'
+    
+    # Tattoo/Applier
+    if 'tattoo' in name_lower or 'applier' in name_lower:
+        return 'Appliers'
+    
+    # Makeup
+    if any(x in name_lower for x in ['makeup', 'lipstick', 'eyeshadow', 'blush', 'liner']):
+        return 'Makeup'
+    
+    # Clothing items
+    if any(x in name_lower for x in ['dress', 'top', 'pants', 'skirt', 'shirt', 'jacket', 'coat']):
+        return 'Clothing'
+    
+    # Shoes
+    if any(x in name_lower for x in ['shoe', 'boot', 'heel', 'sandal', 'sneaker']):
+        return 'Shoes'
+    
+    # Accessories
+    if any(x in name_lower for x in ['ring', 'necklace', 'earring', 'bracelet', 'collar', 'cuff']):
+        return 'Accessories'
+    
+    # Scripts/Utilities
+    if 'script' in name_lower or 'updater' in name_lower:
+        return 'Scripts'
+    
+    # Landmarks/Notecards
+    if 'landmark' in name_lower or name_lower.endswith('.lm'):
+        return 'Landmarks'
+    if 'notecard' in name_lower or 'readme' in name_lower or 'instructions' in name_lower:
+        return 'Notecards'
+    
+    # Default - put in main folder
+    return ''
+
+
 class CorradeInventorySorter:
     """Sorts inventory via Corrade's HTTP API using UUIDs for performance."""
     
@@ -230,10 +330,10 @@ class CorradeInventorySorter:
                 priority=84
             ),
             
-            # Hair - using Option A: Apparel/Hair/[Brand]/
+            # Hair - organized by brand/product for CTS Wardrobe compatibility
             SortRule(
                 name="Hair",
-                target_path="Apparel/Hair",
+                target_path="Body Parts/Hair",  # Base path - brand/product added dynamically
                 matcher=keyword_matcher([
                     'Hair', 'Hairstyle', 'Magika', 'Stealthic', 'Doux',
                     'Truth', 'Sintiklia', 'Wasabi', 'Tableau Vivant'
@@ -533,26 +633,32 @@ class CorradeInventorySorter:
             logger.error(f"Failed to move '{display_name}': {error}")
             return False
     
-    def move_folder_contents(self, source_folder_path: str, target_parent_path: str, folder_name: str) -> bool:
+    def move_folder_contents(self, source_folder_path: str, target_path: str, folder_name: str, keep_folder_name: bool = False) -> bool:
         """
-        Move a folder by recreating it and moving its contents.
+        Move a folder by recreating structure and moving its contents.
         SL doesn't allow moving folders directly - must move contents.
+        
+        Items are sorted into type-specific subfolders (Hair/, HUDs/, etc.)
+        for CTS Wardrobe compatibility.
         
         Args:
             source_folder_path: Full path to source folder
-            target_parent_path: Parent folder where new folder should be created
-            folder_name: Name of the folder being moved
+            target_path: Target folder path (already includes brand/product hierarchy)
+            folder_name: Name of the original folder (for logging)
+            keep_folder_name: If True, create subfolder with original name
         """
         # Ensure paths are absolute
         if not source_folder_path.startswith('/'):
             source_folder_path = f'/My Inventory/{source_folder_path}'
-        if not target_parent_path.startswith('/'):
-            target_parent_path = f'/My Inventory/{target_parent_path}'
+        if not target_path.startswith('/'):
+            target_path = f'/My Inventory/{target_path}'
         
-        target_folder_path = f"{target_parent_path}/{folder_name}"
+        # If keeping folder name, append it to target
+        if keep_folder_name:
+            target_path = f"{target_path}/{folder_name}"
         
         if self.dry_run:
-            logger.info(f"[DRY RUN] Would move folder '{folder_name}' -> {target_folder_path}")
+            logger.info(f"[DRY RUN] Would move folder '{folder_name}' -> {target_path}")
             return True
         
         # Step 1: Get contents of source folder
@@ -562,44 +668,53 @@ class CorradeInventorySorter:
             logger.warning(f"Source folder '{source_folder_path}' is empty or not found")
             return False
         
-        # Step 2: Create target folder with same name
-        logger.info(f"Creating folder: {target_folder_path}")
-        create_result = self._send_command(
-            command='inventory',
-            action='mkdir',
-            name=folder_name,
-            path=target_parent_path
-        )
-        
-        if create_result.get('success', '').lower() != 'true':
-            # Folder might already exist, try to continue
-            logger.debug(f"mkdir result: {create_result.get('error', 'ok')}")
-        
-        time.sleep(0.5)
-        
-        # Step 3: Move each item from source to target
+        # Step 2: Move each item from source to target, organizing into subfolders
         moved_count = 0
+        subfolder_cache = set()  # Track which subfolders we've created
+        
         for item in items:
             item_source = f"{source_folder_path}/{item.name}"
+            
+            # Detect what subfolder this item should go in (Hair/, HUDs/, etc.)
+            subfolder = detect_item_subfolder(item.name)
+            
+            if subfolder:
+                item_target = f"{target_path}/{subfolder}"
+                
+                # Create subfolder path if we haven't already
+                if subfolder not in subfolder_cache:
+                    # Ensure full path exists
+                    self.ensure_folder_exists(item_target.replace('/My Inventory/', ''))
+                    subfolder_cache.add(subfolder)
+                    time.sleep(0.3)
+            else:
+                # No specific subfolder - ensure target exists
+                self.ensure_folder_exists(target_path.replace('/My Inventory/', ''))
+                item_target = target_path
             
             result = self._send_command(
                 command='inventory',
                 action='mv',
                 source=item_source,
-                target=target_folder_path
+                target=item_target
             )
             
             if result.get('success', '').lower() == 'true':
-                logger.debug(f"  Moved: {item.name}")
+                if subfolder:
+                    logger.debug(f"  Moved: {item.name} -> {subfolder}/")
+                else:
+                    logger.debug(f"  Moved: {item.name}")
                 moved_count += 1
             else:
                 logger.error(f"  Failed to move {item.name}: {result.get('error', 'Unknown')}")
             
             time.sleep(0.3)  # Brief delay between items
         
-        logger.info(f"Moved {moved_count}/{len(items)} items from '{folder_name}' -> {target_folder_path}")
+        logger.info(f"Moved {moved_count}/{len(items)} items from '{folder_name}' -> {target_path}")
+        if subfolder_cache:
+            logger.info(f"  Organized into subfolders: {', '.join(sorted(subfolder_cache))}")
         
-        # Step 4: Optionally delete empty source folder
+        # Step 3: Delete empty source folder
         if moved_count == len(items) and moved_count > 0:
             logger.debug(f"Removing empty source folder: {source_folder_path}")
             self._send_command(
@@ -665,16 +780,28 @@ class CorradeInventorySorter:
                     rule = self.find_matching_rule(item.name)
                     
                     if rule:
-                        target_path = self.ensure_folder_exists(rule.target_path)
+                        # Build dynamic path with brand/product hierarchy
+                        brand = extract_brand_from_name(item.name)
+                        product = extract_product_name(item.name, brand) if brand else None
+                        
+                        # Build target path: BaseCategory/Brand/Product/
+                        dynamic_path = rule.target_path
+                        if brand:
+                            dynamic_path = f"{dynamic_path}/{brand}"
+                            if product:
+                                dynamic_path = f"{dynamic_path}/{product}"
+                        
+                        target_path = self.ensure_folder_exists(dynamic_path)
                         
                         if target_path:
                             item_source_path = f"{full_path}/{item.name}"
                             
                             # Use move_folder_contents for folders (SL can't move folders directly)
-                            if self.move_folder_contents(item_source_path, target_path, item.name):
+                            # Pass dynamic_path directly - items go into Brand/Product/Type structure
+                            if self.move_folder_contents(item_source_path, dynamic_path, item.name):
                                 self.moved_count += 1
                                 batch_count += 1
-                                logger.info(f"  Matched rule: {rule.name}")
+                                logger.info(f"  Matched rule: {rule.name} -> {dynamic_path}")
                                 
                                 time.sleep(self.delay)
                                 
