@@ -46,6 +46,7 @@ logs/
 
 # Test data (contains personal inventory)
 test_data/
+dump/
 
 # OS
 .DS_Store
