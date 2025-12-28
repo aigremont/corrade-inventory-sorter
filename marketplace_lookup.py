@@ -460,12 +460,105 @@ class MarketplaceLookup:
                 del by_name[k]
             self._save_cache()
             logger.info(f"Removed {url} from cache")
+    
+    def map_to_sort_category(self, marketplace_category: str) -> Optional[str]:
+        """
+        Map a Marketplace category to our inventory sorting category.
+        
+        Returns a suggested target path for the inventory sorter.
+        """
+        cat_lower = marketplace_category.lower()
+        
+        # Mapping of Marketplace categories to our sorting structure
+        mappings = {
+            # BDSM
+            'bdsm collars': 'BDSM/Restraints/Collars',
+            'bdsm cuffs': 'BDSM/Restraints/Cuffs',
+            'bdsm gags': 'BDSM/Restraints/Gags',
+            'bdsm blindfolds': 'BDSM/Restraints/Blindfolds',
+            'bdsm': 'BDSM',
+            
+            # Body parts
+            'avatar components': 'Body Parts',
+            'mesh bodies': 'Body Parts/Bodies',
+            'mesh heads': 'Body Parts/Heads',
+            'avatar skins': 'Body Parts/Skins',
+            'shape': 'Body Parts/Shapes',
+            'eyes': 'Body Parts/Eyes',
+            'hair': 'Body Parts/Hair',
+            
+            # Clothing
+            'women\'s clothing': 'Clothing',
+            'men\'s clothing': 'Clothing',
+            'unisex clothing': 'Clothing',
+            'pants': 'Clothing/Pants',
+            'shirts': 'Clothing/Tops',
+            'dresses': 'Clothing/Dresses',
+            'shoes': 'Clothing/Shoes',
+            'lingerie': 'Clothing/Lingerie',
+            'underwear': 'Clothing/Underwear',
+            'hosiery': 'Clothing/Hosiery',
+            'jewelry': 'Clothing/Accessories/Jewelry',
+            'accessories': 'Clothing/Accessories',
+            
+            # Animation
+            'animations': 'Animations',
+            'animation override': 'Animation Overrides',
+            'ao': 'Animation Overrides',
+            'poses': 'Animations/Poses',
+            
+            # Other
+            'textures': 'Materials',
+            'scripts': 'Scripts',
+            'furniture': 'Home/Furniture',
+            'home and garden': 'Home',
+        }
+        
+        # Try exact match first
+        for mp_cat, sort_cat in mappings.items():
+            if mp_cat in cat_lower:
+                return sort_cat
+        
+        return None
+    
+    def suggest_category(self, item_name: str) -> Optional[dict]:
+        """
+        Try to suggest a category for an inventory item.
+        
+        Returns dict with 'marketplace_category' and 'suggested_path' if found.
+        """
+        # First check cache
+        cached = self.lookup_by_name(item_name)
+        if cached:
+            suggested = self.map_to_sort_category(cached.category_full)
+            return {
+                'item_name': item_name,
+                'marketplace_category': cached.category_full,
+                'suggested_path': suggested,
+                'source': 'cache',
+                'url': cached.url,
+            }
+        
+        # Try search (may not work due to rate limits)
+        product = self.search_and_lookup(item_name, save=True)
+        if product:
+            suggested = self.map_to_sort_category(product.category_full)
+            return {
+                'item_name': item_name,
+                'marketplace_category': product.category_full,
+                'suggested_path': suggested,
+                'source': 'search',
+                'url': product.url,
+            }
+        
+        return None
 
 
 def main():
     parser = argparse.ArgumentParser(description='Lookup product category from SL Marketplace')
     parser.add_argument('--url', type=str, help='Marketplace product URL')
-    parser.add_argument('--search', type=str, help='Search for product by name (uses Google)')
+    parser.add_argument('--search', type=str, help='Search for product by name')
+    parser.add_argument('--suggest', type=str, help='Suggest sorting category for an item name')
     parser.add_argument('--config', type=str, default='config.json', help='Config file with credentials')
     parser.add_argument('--save', action='store_true', help='Save result to cache')
     parser.add_argument('--cache-file', type=str, default='marketplace_cache.json', help='Cache file path')
@@ -518,6 +611,25 @@ def main():
     if args.test_login:
         success = lookup.login()
         return 0 if success else 1
+    
+    # Handle suggest (for sorting assistance)
+    if args.suggest:
+        result = lookup.suggest_category(args.suggest)
+        if result:
+            print("\n" + "="*60)
+            print(f"Item: {result['item_name']}")
+            print(f"Marketplace Category: {result['marketplace_category']}")
+            if result['suggested_path']:
+                print(f"Suggested Sort Path: {result['suggested_path']}")
+            else:
+                print("Suggested Sort Path: (no mapping available)")
+            print(f"Source: {result['source']}")
+            print(f"URL: {result['url']}")
+            print("="*60)
+            return 0
+        else:
+            logger.info("Could not find category suggestion for this item")
+            return 1
     
     # Handle search
     if args.search:
