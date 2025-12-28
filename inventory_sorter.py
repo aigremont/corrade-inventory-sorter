@@ -361,10 +361,11 @@ class CorradeInventorySorter:
                 matcher=regex_matcher(r'(\*HDM\*|HDM|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
                 priority=87
             ),
+            # Corsets go to BDSM/Clothing/Corsets (match on product type, not brand)
             SortRule(
-                name="BDSM Corsets",
+                name="Corsets",
                 target_path="BDSM/Clothing/Corsets",
-                matcher=regex_matcher(r'(Ava.s Lewd|LUNAFELL|Erica.s corner).*corset'),
+                matcher=keyword_matcher(['corset', 'corsets']),
                 priority=87
             ),
             SortRule(
@@ -443,20 +444,12 @@ class CorradeInventorySorter:
                 priority=70
             ),
             
-            # Hosiery - specific subcategory
+            # Hosiery - specific subcategory (by product keywords, not brand)
             SortRule(
                 name="Hosiery",
                 target_path="Clothing/Hosiery",
-                matcher=regex_matcher(r'(FACS|Pantyhose|Stockings|Tights|Hose|Hosiery)'),
+                matcher=keyword_matcher(['Pantyhose', 'Stockings', 'Tights', 'Hosiery', 'Nylons']),
                 priority=71
-            ),
-            
-            # Clothing Brands
-            SortRule(
-                name="Clothing Brands",
-                target_path="Clothing",
-                matcher=regex_matcher(r'(AVEC TOI|erratic|Blueberry|Addams|Scandalize)'),
-                priority=69
             ),
             
             # Mesh Heads - specific brands, high priority for head items
@@ -489,11 +482,12 @@ class CorradeInventorySorter:
                 priority=63
             ),
             
-            # Skins
+            # Skins - by product type keywords, not brand names
+            # Brands can make multiple products, so match on what the item IS
             SortRule(
                 name="Skins",
                 target_path="Body Parts/Skins",
-                matcher=regex_matcher(r'(Pepe Skins|OMY|2faces|Deetalez|Glam Affair|Pink Fuel|Session|TheSkinnery|Not Found|VELOUR.*Body|Ipanema Body)'),
+                matcher=keyword_matcher(['Skin', 'Skins', 'Body Skin', 'Head Skin', 'BOM Skin']),
                 priority=62
             ),
             

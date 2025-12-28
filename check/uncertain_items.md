@@ -10,8 +10,18 @@ Items from the inventory that I'm unsure how to categorize. Please indicate wher
 | `[LUNAFELL] - Eclipse Corset - FULLPACK` | BDSM/Clothing/Corsets | ✅ Corset brand rule added |
 | `[Erica's corner] Velatrix corset and whip PBR` | BDSM/Clothing/Corsets (corset), Clothing/Accessories (whip) | ✅ Split rules added |
 | `Latex` (folder) | Materials | ✅ Contains Heavy Latex & Smooth Latex materials |
-| `FACS - Custom Hose Modular Pantyhose FULL 1.3 2K Update` | Clothing/Hosiery | ✅ Hosiery rule added |
-| `VELOUR: The "Ipanema Body" for Maitreya (BLUSH)` | Body Parts/Skins | ✅ Body skin, not clothing |
+| `FACS - Custom Hose Modular Pantyhose FULL 1.3 2K Update` | Clothing/Hosiery | ✅ Matches "Pantyhose" keyword |
+| `VELOUR: The "Ipanema Body" for Maitreya (BLUSH)` | Body Parts/Skins | ✅ Matches "Body" keyword (body skin) |
+
+## Rule Philosophy
+
+**Important**: Rules should match on **what the item IS** (product type keywords) rather than **who made it** (brand names).
+
+A store can release multiple product types, so:
+- ❌ `FACS` → Hosiery (brand-specific, FACS could make shoes)
+- ✅ `Pantyhose|Stockings|Tights` → Hosiery (product keywords)
+
+Exceptions: Brands that ONLY make one type of product (e.g., LeLUTKA only makes heads, KDC only makes BDSM restraints)
 
 ## Category Uncertain
 
