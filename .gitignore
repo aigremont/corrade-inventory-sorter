@@ -39,6 +39,7 @@ venv.bak/
 # Config files with secrets
 config.json
 config.local.json
+marketplace_cache.json
 
 # Logs
 *.log
