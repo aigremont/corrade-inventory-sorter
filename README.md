@@ -14,18 +14,30 @@ A Python tool for automatically sorting Second Life inventory using [Corrade's](
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.8+ (or Docker)
 - [Corrade](https://grimore.org/secondlife/scripted_agents/corrade) bot configured with HTTP API enabled
 - The bot must have inventory permissions in the configured group
 
 ## Installation
 
+### Standard Installation
+
 ```bash
-git clone https://github.com/yourusername/corrade-inventory-sorter.git
+git clone https://github.com/aigremont/corrade-inventory-sorter.git
 cd corrade-inventory-sorter
 pip install -r requirements.txt
 cp config.example.json config.json
 # Edit config.json with your Corrade credentials
+```
+
+### Docker Installation
+
+```bash
+git clone https://github.com/aigremont/corrade-inventory-sorter.git
+cd corrade-inventory-sorter
+cp config.example.json config.json
+# Edit config.json with your Corrade credentials
+docker build -t corrade-inventory-sorter .
 ```
 
 ## Usage
@@ -52,6 +64,31 @@ python inventory_sorter.py --config config.json
 
 ```bash
 python inventory_sorter.py --config config.json --dry-run -v
+```
+
+### Docker Usage
+
+```bash
+# Dry run
+docker run --rm -v $(pwd)/config.json:/app/config.json:ro \
+    corrade-inventory-sorter --config /app/config.json --dry-run
+
+# Actual sort
+docker run --rm -v $(pwd)/config.json:/app/config.json:ro \
+    corrade-inventory-sorter --config /app/config.json
+
+# With custom rules
+docker run --rm \
+    -v $(pwd)/config.json:/app/config.json:ro \
+    -v $(pwd)/rules.json:/app/rules.json:ro \
+    corrade-inventory-sorter --config /app/config.json --rules /app/rules.json --dry-run
+```
+
+Or use docker-compose:
+
+```bash
+# Edit docker-compose.yml command as needed
+docker-compose up
 ```
 
 ## Configuration

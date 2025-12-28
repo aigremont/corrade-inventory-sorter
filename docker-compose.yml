@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  inventory-sorter:
+    build: .
+    image: corrade-inventory-sorter:latest
+    container_name: corrade-inventory-sorter
+    volumes:
+      # Mount your config files
+      - ./config.json:/app/config.json:ro
+      - ./rules.json:/app/rules.json:ro
+    # Override command for actual runs
+    # For dry-run:
+    command: ["--config", "/app/config.json", "--dry-run"]
+    # For actual sort:
+    # command: ["--config", "/app/config.json"]
+    # 
+    # Or run manually:
+    # docker-compose run --rm inventory-sorter --config /app/config.json --dry-run --folders Gestures
+
