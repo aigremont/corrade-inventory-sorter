@@ -349,15 +349,34 @@ class CorradeInventorySorter:
                 matcher=keyword_matcher([
                     'KDC', 'collar', 'cuff', 'cuffs', 'hood', 'gag', 'muzzle',
                     'chastity', 'straitjacket', 'restraint', 'bondage',
-                    'leash', 'blindfold', 'armbinder', 'spreader', 'harness'
+                    'leash', 'blindfold', 'armbinder', 'spreader', 'harness',
+                    'prisoner', 'prison', 'slave', 'submissa'
                 ]),
                 priority=88
             ),
             SortRule(
                 name="BDSM Brands",
                 target_path="BDSM",
-                matcher=regex_matcher(r'(\*?HDM\*?|NGW|Vixen|Silenced|RR&Co|Bad Bunny|OpenCollar|Realrestraint)'),
+                # Note: \* escapes literal asterisks, brands often use *Brand* or ~Brand~ patterns
+                matcher=regex_matcher(r'(\*HDM\*|HDM|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|Erica.s corner|LnB|BioDoll)'),
                 priority=87
+            ),
+            SortRule(
+                name="BDSM Latex",
+                target_path="BDSM",
+                matcher=keyword_matcher([
+                    'latex catsuit', 'rubber doll', 'latex doll', 'kink add-on',
+                    'open body', 'polyform latex'
+                ]),
+                priority=86
+            ),
+            
+            # Animation Overrides - goes to system folder
+            SortRule(
+                name="Animation Overrides",
+                target_path="Animation Overrides",
+                matcher=regex_matcher(r'(\bAO\b|Animation Override|BENTO AO|BodyLanguage.*AO|AO.*Pack)'),
+                priority=86
             ),
             
             # Gestures - the PoC category
@@ -382,16 +401,16 @@ class CorradeInventorySorter:
                     'Hair', 'Hairstyle', 'Magika', 'Stealthic', 'Doux',
                     'Truth', 'Sintiklia', 'Wasabi', 'Tableau Vivant'
                 ]),
-                priority=80
+                priority=78  # Lower than heads since some head brands also make hair
             ),
             
             # Shoes
             SortRule(
                 name="Shoes",
-                target_path="Apparel/Shoes",
+                target_path="Clothing/Shoes",
                 matcher=keyword_matcher([
                     'Boots', 'Heels', 'Shoes', 'Sneakers', 'Sandals',
-                    'Flats', 'Pumps', 'Loafers', 'Stilettos'
+                    'Flats', 'Pumps', 'Loafers', 'Stilettos', 'Cuban heel'
                 ]),
                 priority=75
             ),
@@ -399,21 +418,31 @@ class CorradeInventorySorter:
             # Clothing
             SortRule(
                 name="Clothing",
-                target_path="Apparel/Clothing",
+                target_path="Clothing",
                 matcher=keyword_matcher([
                     'Dress', 'Gown', 'Skirt', 'Pants', 'Shirt', 'Top',
                     'Sweater', 'Lingerie', 'Bikini', 'Blouse', 'Jacket',
-                    'Coat', 'Jeans', 'Shorts', 'Leggings'
+                    'Coat', 'Jeans', 'Shorts', 'Leggings', 'Thong', 'Panties',
+                    'Bra', 'Underwear', 'Pantyhose', 'Stockings', 'Bodysuit',
+                    'Catsuit', 'Suit'
                 ]),
                 priority=70
+            ),
+            
+            # Clothing Brands
+            SortRule(
+                name="Clothing Brands",
+                target_path="Clothing",
+                matcher=regex_matcher(r'(AVEC TOI|VELOUR|erratic|FACS|Blueberry|Addams|Scandalize)'),
+                priority=69
             ),
             
             # Mesh Heads - specific brands, high priority for head items
             SortRule(
                 name="Mesh Heads",
                 target_path="Body Parts/Heads",
-                matcher=regex_matcher(r'(LeLUTKA|GENUS|Catwa|LAQ|Akeruka|Logo|Mesh Head)'),
-                priority=65
+                matcher=regex_matcher(r'(LeLUTKA|GENUS|Catwa|LAQ|Akeruka|Logo|Mesh Head|GENUS Project)'),
+                priority=82  # Higher than hair to catch head products first
             ),
             
             # Mesh Bodies
@@ -425,6 +454,25 @@ class CorradeInventorySorter:
                     'Kupra', 'Perky', 'eBody', 'Altamura', 'Mesh Body'
                 ]),
                 priority=64
+            ),
+            
+            # Body Deformers/Fixers
+            SortRule(
+                name="Body Deformers",
+                target_path="Body Parts/Bodies",
+                matcher=keyword_matcher([
+                    'deformer', 'fixer', 'butt fixer', 'flat ass', 'morph',
+                    'kuromori', 'Influence'
+                ]),
+                priority=63
+            ),
+            
+            # Skins
+            SortRule(
+                name="Skins",
+                target_path="Body Parts/Skins",
+                matcher=regex_matcher(r'(Skin|Pepe Skins|OMY|2faces|Deetalez|Glam Affair|Pink Fuel|Session|TheSkinnery|Not Found)'),
+                priority=62
             ),
             
             # Body Parts - generic (lower priority)
