@@ -1,0 +1,59 @@
+{
+    "rules": [
+        {
+            "name": "Boxed Items",
+            "target_path": "Boxed Items",
+            "regex": "(Box|Add\\s*Me|Rezz\\s*Me|Unpack)",
+            "priority": 100
+        },
+        {
+            "name": "Demos",
+            "target_path": "_Demos",
+            "regex": "\\bdemo\\b",
+            "priority": 90
+        },
+        {
+            "name": "Dance Gestures",
+            "target_path": "Gestures/Dances",
+            "keywords": ["dance", "dancing", "dances"],
+            "priority": 85
+        },
+        {
+            "name": "Expression Gestures",
+            "target_path": "Gestures/Expressions",
+            "keywords": ["laugh", "cry", "smile", "wave", "clap", "cheer", "boo", "shrug"],
+            "priority": 84
+        },
+        {
+            "name": "Hair",
+            "target_path": "Apparel/Hair",
+            "keywords": ["Hair", "Hairstyle", "Magika", "Stealthic", "Doux", "Truth", "Sintiklia", "Wasabi"],
+            "priority": 80
+        },
+        {
+            "name": "Shoes",
+            "target_path": "Apparel/Shoes",
+            "keywords": ["Boots", "Heels", "Shoes", "Sneakers", "Sandals", "Flats", "Pumps", "Loafers"],
+            "priority": 75
+        },
+        {
+            "name": "Clothing",
+            "target_path": "Apparel/Clothing",
+            "keywords": ["Dress", "Gown", "Skirt", "Pants", "Shirt", "Top", "Sweater", "Lingerie", "Bikini"],
+            "priority": 70
+        },
+        {
+            "name": "Body Parts",
+            "target_path": "Avatar/Body Parts",
+            "keywords": ["Skin", "Shape", "Eyes", "Head", "Body", "Maitreya", "Legacy", "Catwa", "Lelutka"],
+            "priority": 60
+        },
+        {
+            "name": "Furniture",
+            "target_path": "Home & Decor",
+            "keywords": ["Chair", "Table", "Lamp", "Furniture", "Sofa", "Bed", "Desk"],
+            "priority": 50
+        }
+    ]
+}
+
