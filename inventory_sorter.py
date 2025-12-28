@@ -179,8 +179,8 @@ def detect_item_subfolder(item_name: str) -> str:
     if 'hud' in name_lower:
         return 'HUDs'
     
-    # Hair
-    if 'hair' in name_lower and 'chair' not in name_lower:
+    # Hair (including bangs, pigtails, etc.)
+    if any(x in name_lower for x in ['hair', 'bangs', 'pigtail', 'ponytail', 'braid', 'wig']) and 'chair' not in name_lower:
         return 'Hair'
     
     # Skin
@@ -235,9 +235,9 @@ def detect_item_subfolder(item_name: str) -> str:
     if 'landmark' in name_lower or name_lower.endswith('.lm'):
         return 'Landmarks'
     
-    # Notecards (ReadMe, Instructions, etc.)
+    # Documentation (ReadMe, Instructions, etc.)
     if 'notecard' in name_lower or 'read me' in name_lower or 'readme' in name_lower or 'instructions' in name_lower:
-        return 'Notecards'
+        return 'Docs'
     
     # Posters/Ads
     if 'poster' in name_lower or 'ad ' in name_lower or ' ad' in name_lower:
