@@ -533,6 +533,83 @@ class CorradeInventorySorter:
             logger.error(f"Failed to move '{display_name}': {error}")
             return False
     
+    def move_folder_contents(self, source_folder_path: str, target_parent_path: str, folder_name: str) -> bool:
+        """
+        Move a folder by recreating it and moving its contents.
+        SL doesn't allow moving folders directly - must move contents.
+        
+        Args:
+            source_folder_path: Full path to source folder
+            target_parent_path: Parent folder where new folder should be created
+            folder_name: Name of the folder being moved
+        """
+        # Ensure paths are absolute
+        if not source_folder_path.startswith('/'):
+            source_folder_path = f'/My Inventory/{source_folder_path}'
+        if not target_parent_path.startswith('/'):
+            target_parent_path = f'/My Inventory/{target_parent_path}'
+        
+        target_folder_path = f"{target_parent_path}/{folder_name}"
+        
+        if self.dry_run:
+            logger.info(f"[DRY RUN] Would move folder '{folder_name}' -> {target_folder_path}")
+            return True
+        
+        # Step 1: Get contents of source folder
+        items = self.get_folder_contents_by_path(source_folder_path)
+        
+        if not items:
+            logger.warning(f"Source folder '{source_folder_path}' is empty or not found")
+            return False
+        
+        # Step 2: Create target folder with same name
+        logger.info(f"Creating folder: {target_folder_path}")
+        create_result = self._send_command(
+            command='inventory',
+            action='mkdir',
+            name=folder_name,
+            path=target_parent_path
+        )
+        
+        if create_result.get('success', '').lower() != 'true':
+            # Folder might already exist, try to continue
+            logger.debug(f"mkdir result: {create_result.get('error', 'ok')}")
+        
+        time.sleep(0.5)
+        
+        # Step 3: Move each item from source to target
+        moved_count = 0
+        for item in items:
+            item_source = f"{source_folder_path}/{item.name}"
+            
+            result = self._send_command(
+                command='inventory',
+                action='mv',
+                source=item_source,
+                target=target_folder_path
+            )
+            
+            if result.get('success', '').lower() == 'true':
+                logger.debug(f"  Moved: {item.name}")
+                moved_count += 1
+            else:
+                logger.error(f"  Failed to move {item.name}: {result.get('error', 'Unknown')}")
+            
+            time.sleep(0.3)  # Brief delay between items
+        
+        logger.info(f"Moved {moved_count}/{len(items)} items from '{folder_name}' -> {target_folder_path}")
+        
+        # Step 4: Optionally delete empty source folder
+        if moved_count == len(items) and moved_count > 0:
+            logger.debug(f"Removing empty source folder: {source_folder_path}")
+            self._send_command(
+                command='inventory',
+                action='rm',
+                path=source_folder_path
+            )
+        
+        return moved_count > 0
+    
     def find_matching_rule(self, item_name: str) -> Optional[SortRule]:
         """Find the first matching rule for an item name."""
         normalized = normalize_folder_name(item_name)
@@ -593,7 +670,8 @@ class CorradeInventorySorter:
                         if target_path:
                             item_source_path = f"{full_path}/{item.name}"
                             
-                            if self.move_item(item_source_path, target_path, item.name):
+                            # Use move_folder_contents for folders (SL can't move folders directly)
+                            if self.move_folder_contents(item_source_path, target_path, item.name):
                                 self.moved_count += 1
                                 batch_count += 1
                                 logger.info(f"  Matched rule: {rule.name}")
