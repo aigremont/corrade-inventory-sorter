@@ -21,7 +21,12 @@ A store can release multiple product types, so:
 - ❌ `FACS` → Hosiery (brand-specific, FACS could make shoes)
 - ✅ `Pantyhose|Stockings|Tights` → Hosiery (product keywords)
 
-Exceptions: Brands that ONLY make one type of product (e.g., LeLUTKA only makes heads, KDC only makes BDSM restraints)
+**Body/Head brands are tricky**: A folder like "Maitreya Dress" is clothing FOR Maitreya, not the body itself.
+
+Solutions:
+- **Heads**: Require brand + "Head" keyword (e.g., `LeLUTKA.*Head`)
+- **Bodies**: Match specific product names (Lara, Reborn, Kupra) not just brand names
+- **BDSM brands**: Safe to match by brand since KDC/NGW/etc. ONLY make restraints
 
 ## Category Uncertain
 

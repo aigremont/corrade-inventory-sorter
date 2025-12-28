@@ -452,22 +452,22 @@ class CorradeInventorySorter:
                 priority=71
             ),
             
-            # Mesh Heads - specific brands, high priority for head items
+            # Mesh Heads - require brand + "Head" to avoid matching clothing
+            # "Dress for LeLUTKA" won't match, but "LeLUTKA Avalon Head" will
+            # "GENUS Project - BOM MAKEUP" won't match (no "Head"), but "GENUS Head" will
             SortRule(
                 name="Mesh Heads",
                 target_path="Body Parts/Heads",
-                matcher=regex_matcher(r'(LeLUTKA|GENUS|Catwa|LAQ|Akeruka|Logo|Mesh Head|GENUS Project)'),
+                matcher=regex_matcher(r'((LeLUTKA|GENUS|Catwa|LAQ|Akeruka|Logo).*Head|Mesh Head)'),
                 priority=82  # Higher than hair to catch head products first
             ),
             
-            # Mesh Bodies
+            # Mesh Bodies - match on specific PRODUCT names, not just brand names
+            # "Maitreya Dress" should NOT match, but "Maitreya Lara Body" should
             SortRule(
                 name="Mesh Bodies",
                 target_path="Body Parts/Bodies",
-                matcher=keyword_matcher([
-                    'Maitreya', 'Legacy', 'Belleza', 'Slink', 'Reborn',
-                    'Kupra', 'Perky', 'eBody', 'Altamura', 'Mesh Body'
-                ]),
+                matcher=regex_matcher(r'(Lara\b|LaraX|Mesh Body|Reborn\b|Kupra|Perky|Freya|Isis|Venus|Hourglass|Physique|Legacy.*Body|eBody.*Reborn)'),
                 priority=64
             ),
             
