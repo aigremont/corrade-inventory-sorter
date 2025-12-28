@@ -231,11 +231,17 @@ def detect_item_subfolder(item_name: str) -> str:
     if 'script' in name_lower or 'updater' in name_lower:
         return 'Scripts'
     
-    # Landmarks/Notecards
+    # Landmarks
     if 'landmark' in name_lower or name_lower.endswith('.lm'):
         return 'Landmarks'
-    if 'notecard' in name_lower or 'readme' in name_lower or 'instructions' in name_lower:
+    
+    # Notecards (ReadMe, Instructions, etc.)
+    if 'notecard' in name_lower or 'read me' in name_lower or 'readme' in name_lower or 'instructions' in name_lower:
         return 'Notecards'
+    
+    # Posters/Ads
+    if 'poster' in name_lower or 'ad ' in name_lower or ' ad' in name_lower:
+        return 'Extras'
     
     # Default - put in main folder
     return ''
