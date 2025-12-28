@@ -44,6 +44,9 @@ config.local.json
 *.log
 logs/
 
+# Test data (contains personal inventory)
+test_data/
+
 # OS
 .DS_Store
 Thumbs.db
