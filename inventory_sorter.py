@@ -113,7 +113,10 @@ def extract_brand_from_name(name: str) -> Optional[str]:
     - "[Brand] Item Name"
     - "Brand - Item Name"
     - "Brand :: Item Name"
-    - "Brand: Item Name"
+    - "*Brand* Item Name" (asterisks)
+    - ".::Brand::. Item Name" (decorative)
+    - "~Brand~ Item Name" (tildes)
+    - "::Brand:: Item Name"
     """
     normalized = normalize_folder_name(name)
     
@@ -122,21 +125,38 @@ def extract_brand_from_name(name: str) -> Optional[str]:
     if bracket_match:
         return bracket_match.group(1).strip()
     
-    # Pattern: Brand - ...
+    # Pattern: *Brand* ... (asterisks around brand)
+    asterisk_match = re.match(r'^\*([^*]+)\*', normalized)
+    if asterisk_match:
+        return asterisk_match.group(1).strip()
+    
+    # Pattern: .::Brand::. ... (decorative punctuation)
+    decorative_match = re.match(r'^[.\s]*::([^:]+)::[.\s]*', normalized)
+    if decorative_match:
+        return decorative_match.group(1).strip()
+    
+    # Pattern: ~Brand~ ... (tildes)
+    tilde_match = re.match(r'^~([^~]+)~', normalized)
+    if tilde_match:
+        return tilde_match.group(1).strip()
+    
+    # Pattern: ::Brand:: ... (just double colons)
+    double_colon_match = re.match(r'^::([^:]+)::', normalized)
+    if double_colon_match:
+        return double_colon_match.group(1).strip()
+    
+    # Pattern: Brand :: ... (space before double colon)
+    spaced_double_colon_match = re.match(r'^([^:]+?)\s*::\s', normalized)
+    if spaced_double_colon_match:
+        return spaced_double_colon_match.group(1).strip()
+    
+    # Pattern: Brand - ... (dash separator)
     dash_match = re.match(r'^([^-]+?)\s*[-–—]\s', normalized)
     if dash_match:
         potential_brand = dash_match.group(1).strip()
         # Avoid matching things like "Demo - " or version numbers
         if len(potential_brand) > 2 and not potential_brand.lower() in ['demo', 'v1', 'v2']:
             return potential_brand
-    
-    # Pattern: Brand :: ...
-    double_colon_match = re.match(r'^([^:]+?)\s*::\s', normalized)
-    if double_colon_match:
-        return double_colon_match.group(1).strip()
-    
-    # Pattern: Brand: ... (less reliable, only use for known brands)
-    # Skipped to avoid false positives
     
     return None
 
@@ -322,6 +342,24 @@ class CorradeInventorySorter:
                 priority=90
             ),
             
+            # BDSM/Kink items - high priority to catch before generic clothing
+            SortRule(
+                name="BDSM Restraints",
+                target_path="BDSM",
+                matcher=keyword_matcher([
+                    'KDC', 'collar', 'cuff', 'cuffs', 'hood', 'gag', 'muzzle',
+                    'chastity', 'straitjacket', 'restraint', 'bondage',
+                    'leash', 'blindfold', 'armbinder', 'spreader', 'harness'
+                ]),
+                priority=88
+            ),
+            SortRule(
+                name="BDSM Brands",
+                target_path="BDSM",
+                matcher=regex_matcher(r'(\*?HDM\*?|NGW|Vixen|Silenced|RR&Co|Bad Bunny|OpenCollar|Realrestraint)'),
+                priority=87
+            ),
+            
             # Gestures - the PoC category
             SortRule(
                 name="Dance Gestures",
@@ -370,16 +408,41 @@ class CorradeInventorySorter:
                 priority=70
             ),
             
-            # Body Parts
+            # Mesh Heads - specific brands, high priority for head items
+            SortRule(
+                name="Mesh Heads",
+                target_path="Body Parts/Heads",
+                matcher=regex_matcher(r'(LeLUTKA|GENUS|Catwa|LAQ|Akeruka|Logo|Mesh Head)'),
+                priority=65
+            ),
+            
+            # Mesh Bodies
+            SortRule(
+                name="Mesh Bodies",
+                target_path="Body Parts/Bodies",
+                matcher=keyword_matcher([
+                    'Maitreya', 'Legacy', 'Belleza', 'Slink', 'Reborn',
+                    'Kupra', 'Perky', 'eBody', 'Altamura', 'Mesh Body'
+                ]),
+                priority=64
+            ),
+            
+            # Body Parts - generic (lower priority)
             SortRule(
                 name="Body Parts",
-                target_path="Avatar/Body Parts",
+                target_path="Body Parts",
                 matcher=keyword_matcher([
-                    'Skin', 'Shape', 'Eyes', 'Head', 'Body', 'Mesh Body',
-                    'Bento', 'Maitreya', 'Legacy', 'Belleza', 'Slink',
-                    'Catwa', 'Lelutka', 'Genus'
+                    'Skin', 'Shape', 'Eyes', 'Bento', 'BOM', 'Applier'
                 ]),
                 priority=60
+            ),
+            
+            # Tattoos
+            SortRule(
+                name="Tattoos",
+                target_path="Body Parts/Tattoos",
+                matcher=keyword_matcher(['tattoo', 'tattoos', 'tat', 'barcode']),
+                priority=59
             ),
             
             # Furniture & Decor
@@ -577,7 +640,7 @@ class CorradeInventorySorter:
         for part in parts:
             next_path = f"{current_path}/{part}"
             
-            # Check if this segment exists
+            # Check if this segment exists via direct path
             check_result = self._send_command(
                 command='inventory',
                 action='ls',
@@ -585,24 +648,40 @@ class CorradeInventorySorter:
             )
             
             if check_result.get('success', '').lower() != 'true':
-                # Create this folder
-                logger.info(f"Creating folder: {next_path}")
+                # Path doesn't exist - but check if folder with same name exists at parent
+                # This prevents creating duplicate folders
+                parent_contents = self.get_folder_contents_by_path(current_path)
+                existing_folder = None
+                part_lower = part.lower()
                 
-                if not self.dry_run:
-                    create_result = self._send_command(
-                        command='inventory',
-                        action='mkdir',
-                        name=part,
-                        path=current_path
-                    )
-                    
-                    if create_result.get('success', '').lower() != 'true':
-                        logger.error(f"Failed to create folder {next_path}: {create_result.get('error', '')}")
-                        return None
-                    
-                    time.sleep(0.5)  # Brief delay for SL to process
+                for item in parent_contents:
+                    if item.item_type.lower() == 'folder' and item.name.lower() == part_lower:
+                        existing_folder = item
+                        logger.debug(f"Found existing folder '{item.name}' at {current_path}")
+                        break
+                
+                if existing_folder:
+                    # Use the existing folder (with its actual name/casing)
+                    next_path = f"{current_path}/{existing_folder.name}"
                 else:
-                    logger.info(f"[DRY RUN] Would create folder: {next_path}")
+                    # Create this folder
+                    logger.info(f"Creating folder: {next_path}")
+                    
+                    if not self.dry_run:
+                        create_result = self._send_command(
+                            command='inventory',
+                            action='mkdir',
+                            name=part,
+                            path=current_path
+                        )
+                        
+                        if create_result.get('success', '').lower() != 'true':
+                            logger.error(f"Failed to create folder {next_path}: {create_result.get('error', '')}")
+                            return None
+                        
+                        time.sleep(0.5)  # Brief delay for SL to process
+                    else:
+                        logger.info(f"[DRY RUN] Would create folder: {next_path}")
             
             current_path = next_path
         
