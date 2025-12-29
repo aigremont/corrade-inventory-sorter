@@ -438,7 +438,7 @@ class CorradeInventorySorter:
                 target_path="Body Parts/Hair",  # Base path - brand/product added dynamically
                 matcher=keyword_matcher([
                     'Hair', 'Hairstyle', 'Magika', 'Stealthic', 'Doux',
-                    'Truth', 'Sintiklia', 'Wasabi', 'Tableau Vivant'
+                    'Truth', 'Sintiklia', 'Wasabi', 'Tableau Vivant', 'KUNI'
                 ]),
                 priority=78  # Lower than heads since some head brands also make hair
             ),
@@ -564,6 +564,13 @@ class CorradeInventorySorter:
                     'Animator', 'Face Light', 'AO HUD'
                 ]),
                 priority=55
+            ),
+            # Update folders (RealRestraint, etc.)
+            SortRule(
+                name="Updaters",
+                target_path="Objects/Updaters",
+                matcher=regex_matcher(r'(Update folder|Updater|RR Update)'),
+                priority=54
             ),
             
             # OMY is generally animations

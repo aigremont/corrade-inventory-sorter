@@ -78,22 +78,38 @@ Once path encoding is fixed:
 These need manual inspection to determine category:
 
 - [x] `Aleph\null Welcome Package` ✓ deleted
-- [ ] `Size:KaS, bundle (box)` - Unknown product
-- [ ] `Loose` - Loose items folder?
+- [x] `Size:KaS` ✓ renamed (BDSM gear)
+- [x] `Loose` ✓ renamed to "metal" (Materials)
 - [x] `2faces - ""UNA"" - full pack` ✓ renamed (outfit)
-- [ ] `KUNI - Sharon (Color HUD Pack) (v3)` - Color HUD for what product?
-- [ ] `GIFT LOCATION` - Landmark/location info?
-- [ ] `RR Update folder` - RealRestraint updates → BDSM?
-- [ ] `Latex` - Materials folder (should stay in Materials if contains textures)
+- [x] `KUNI - Sharon` ✓ is hair → Body Parts/Hair
+- [x] `GIFT LOCATION` ✓ deleted
+- [x] `RR Update folder` → Objects/Updaters
+- [x] `Latex` ✓ Materials (stays)
 
 ---
 
 ## Priority Order
 
-1. **Fix path encoding** - This unblocks most of the remaining items
-2. **Debug HDM matching** - BDSM products waiting
-3. **Add Objects/Check rule** - For uncertain boxed items
-4. **Manual review** - Unknown items list above
+1. ~~**Fix path encoding**~~ - Most handled manually
+2. ~~**Debug HDM matching**~~ - Deleted manually
+3. **Structure BDSM folder** - Organize items at BDSM root into subfolders
+4. **Add Objects/Check rule** - For uncertain boxed items
+
+---
+
+## BDSM Folder Structure (TODO)
+
+Current subfolders:
+- `BDSM/Equipment/` - Hoods, armbinders, gags, blindfolds, cuffs
+- `BDSM/Clothing/Corsets/` - Corsets
+
+Potential additional subfolders:
+- `BDSM/Collars/` - Collars (currently goes to BDSM root)
+- `BDSM/Harnesses/` - Harnesses
+- `BDSM/Furniture/` - BDSM furniture/equipment
+- `BDSM/Toys/` - Whips, crops, etc.
+
+Need to check what's currently at BDSM root and structure accordingly.
 
 ---
 
@@ -114,4 +130,10 @@ These need manual inspection to determine category:
 - [x] Aleph\null → deleted
 - [x] HDM Nilea items → deleted
 - [x] CryBunBun Submissa Harness → deleted
+- [x] Size:KaS → renamed (BDSM gear)
+- [x] KUNI Sharon → Hair (rule added)
+- [x] GIFT LOCATION → deleted
+- [x] RR Update → Objects/Updaters (rule added)
+- [x] Latex → Materials
+- [x] Loose → renamed to "metal" (Materials)
 
