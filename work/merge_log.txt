@@ -1,0 +1,206 @@
+Checking Corrade connection...
+Connected to Corrade
+
+============================================================
+MERGE OPERATIONS
+Mode: LIVE
+============================================================
+
+
+--- Merge Apparel/Hair into Body Parts/Hair ---
+Source: My Inventory/Apparel/Hair
+Target: My Inventory/Body Parts/Hair
+    Creating: /My Inventory/My Inventory
+    Creating: /My Inventory/My Inventory/Body Parts
+    Creating: /My Inventory/My Inventory/Body Parts/Hair
+  Found 1 items
+  📁 Magika - Sadie Hair/
+    Creating: /My Inventory/My Inventory/Body Parts/Hair/Magika - Sadie Hair
+    Found 2 items
+      [OK] Magika - Hair - Sadie (Size 1)
+      [OK] Magika - HUD - Sadie
+
+  Results: 2 moved, 0 failed, 1 subfolders
+
+--- Merge Apparel/Clothing into Clothing ---
+Source: My Inventory/Apparel/Clothing
+Target: My Inventory/Clothing
+    Creating: /My Inventory/My Inventory/Clothing
+  Found 2 items
+  📁 HUDs/
+    Creating: /My Inventory/My Inventory/Clothing/HUDs
+    Found 1 items
+      [OK] Beaumore 'Olivia' Top FATPACK (HUD)
+  📁 Clothing/
+    Creating: /My Inventory/My Inventory/Clothing/Clothing
+    Found 1 items
+      [OK] Beaumore 'Olivia' Top for Lara
+
+  Results: 2 moved, 0 failed, 2 subfolders
+
+--- Merge Apparel/Shoes into Clothing/Shoes ---
+Source: My Inventory/Apparel/Shoes
+Target: My Inventory/Clothing/Shoes
+    Creating: /My Inventory/My Inventory/Clothing/Shoes
+  Found 9 items
+  📁 Moon Elixir x MUSE/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Moon Elixir x MUSE
+    Found 1 items
+    📁 Secret Admirer - Shoes/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Moon Elixir x MUSE/Secret Admirer - Shoes
+      Found 2 items
+      📁 HUDs/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Moon Elixir x MUSE/Secret Admirer - Shoes/HUDs
+        Found 1 items
+          [OK] HUD Palette - Secret Admirer - Shoes - Customize
+      📁 Shoes/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Moon Elixir x MUSE/Secret Admirer - Shoes/Shoes
+        Found 2 items
+          [OK] Moon Elixir x MUSE - Secret Admirer - Lara - Shoes
+          [OK] Moon Elixir x MUSE - Secret Admirer - Lara - Shoes
+  📁 Shoes/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Shoes
+    Found 19 items
+      [OK] KDC Ayumi  boots alpha Size 0
+      [OK] KDC Ayumi boot - 2.0 fitmesh (l lower leg)
+      [OK] KDC Ayumi boot UV - main
+      [OK] KDC Ayumi boot UV - strap
+      [OK] KDC Ayumi boot - standard (l lower leg)
+      [OK] KDC Ayumi boot - 2.0 fitmesh (r lower leg)
+      [OK] KDC Ayumi boot UV - heel
+      [OK] Changelog: boots
+      [OK] KDC Ayumi boots alpha texture Size 2
+      [OK] KDC Ayumi boots alpha texture Size 0
+      [OK] KDC Ayumi boots alpha texture Size 3
+      [OK] KDC Ayumi  boots alpha Size 1
+      [OK] KDC Ayumi boot - standard (r lower leg)
+      [OK] KDC Ayumi  boots alpha Size 3
+      [OK] KDC Ayumi boot UV - sole
+      [OK] KDC Ayumi  boots alpha Size 2
+      [OK] KDC Ayumi boots alpha texture Size 1
+      [OK] KDC Ayumi boot UV - panels
+      [OK] KDC Ayumi boots base
+  📁 Ideeen/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen
+    Found 2 items
+    📁 [Ideeen] - Ballet Boots/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen/[Ideeen] - Ballet Boots
+      Found 5 items
+      📁 HUDs/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen/[Ideeen] - Ballet Boots/HUDs
+        Found 2 items
+          [OK] [Ideeen] HUDProxyScript
+          [OK] [Ideeen] Ballet Boots HUD
+      📁 Shoes/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen/[Ideeen] - Ballet Boots/Shoes
+        Found 3 items
+          [OK] [Ideeen] Ballet Boots (Reborn)
+          [OK] Ballet Boot Base
+          [OK] Ballet Boot Info
+        [OK] Ideeen Store on Aleph Null
+        [OK] changelog ID RLV
+        [OK] Important RLV Info!
+    📁 [Ideeen] - Ballet Boots - LaraX/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen/[Ideeen] - Ballet Boots - LaraX
+      Found 6 items
+      📁 HUDs/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen/[Ideeen] - Ballet Boots - LaraX/HUDs
+        Found 1 items
+          [OK] [Ideeen] Ballet Boots HUD
+      📁 Shoes/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Ideeen/[Ideeen] - Ballet Boots - LaraX/Shoes
+        Found 1 items
+          [OK] Ballet Boot Info
+        [OK] Ideeen Store on Aleph Null
+        [OK] [Ideeen] ID (RLV) v1.3.1
+        [OK] Important RLV Info!
+        [OK] changelog ID RLV
+  📁 HUDs/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/HUDs
+    Found 2 items
+      [OK] KDC Ayumi boots HUD (Leather)
+      [OK] KDC RLV Activator HUD 2.5
+  📁 AVEC TOI/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/AVEC TOI
+    Found 1 items
+    📁 Anna Boots & Stockings TEMPEST PACK (maitreya)/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/AVEC TOI/Anna Boots & Stockings TEMPEST PACK (maitreya)
+      Found 5 items
+      📁 HUDs/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/AVEC TOI/Anna Boots & Stockings TEMPEST PACK (maitreya)/HUDs
+        Found 3 items
+          [OK] (HUD) AVEC TOI - Shininess
+          [OK] (HUD) AVEC TOI - Anna Boots TEMPEST
+          [OK] (HUD) AVEC TOI - Anna Stockings
+      📁 Shoes/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/AVEC TOI/Anna Boots & Stockings TEMPEST PACK (maitreya)/Shoes
+        Found 3 items
+          [OK] AVEC TOI - Anna Boots (BOM Alpha) (ALL)
+          [OK] AVEC TOI - Anna Boots - TIGHT (Maitreya)
+          [OK] AVEC TOI - Anna Boots - WIDE (Maitreya)
+        [OK] AVEC TOI - Anna Stockings - R - (Maitreya)
+        [OK] AVEC TOI - Anna Stockings (Maitreya)
+        [OK] AVEC TOI - Anna Stockings - L - (Maitreya)
+  📁 Docs/
+    Creating: /My Inventory/My Inventory/Clothing/Shoes/Docs
+    Found 1 items
+      [OK] KDC Read me! Important!
+    [OK] KDC's main shop
+    [OK] KDC Free bundle (boxed)
+    [OK] KDC Keyless padlock
+
+  Results: 51 moved, 0 failed, 18 subfolders
+
+--- Merge Avatar/Body Parts into Body Parts ---
+Source: My Inventory/Avatar/Body Parts
+Target: My Inventory/Body Parts
+  Found 88 items
+  📁 Head/
+    Creating: /My Inventory/My Inventory/Body Parts/Head
+    Found 3 items
+      [OK] \/ HEAD \/ lel EvoX NOEL 3.1
+      [OK] \/ HEAD \/ lel EvoX RAVEN 3.1
+      [OK] \/ HEAD \/ lel EvoX AVALON 3.1
+  📁 Maitreya Mesh Body/
+    Creating: /My Inventory/My Inventory/Body Parts/Maitreya Mesh Body
+    Found 1 items
+    📁 LaraX/
+    Creating: /My Inventory/My Inventory/Body Parts/Maitreya Mesh Body/LaraX
+      Found 5 items
+      📁 Body/
+    Creating: /My Inventory/My Inventory/Body Parts/Maitreya Mesh Body/LaraX/Body
+        Found 4 items
+          [OK] Maitreya Mesh Body - LaraX V1.1
+          [OK] Maitreya Mesh Body - Save Stick (rez to rename)
+          [OK] Maitreya Mesh Body - Alpha (don't wear in BoM mode)
+          [OK] Maitreya Mesh Body LaraX
+      📁 Shape/
+    Creating: /My Inventory/My Inventory/Body Parts/Maitreya Mesh Body/LaraX/Shape
+        Found 1 items
+          [OK] Maitreya Tip-Toe FeetShape
+      📁 HUDs/
+    Creating: /My Inventory/My Inventory/Body Parts/Maitreya Mesh Body/LaraX/HUDs
+        Found 2 items
+          [OK] Maitreya Mesh Body - LaraX HUD V1.1
+          [OK] LaraX EXTRAS UNPACKER HUD V1.1
+        [OK] LaraX Update Notes 1.1
+        [OK] Maitreya LaraX Physics
+  📁 Extras/
+    Creating: /My Inventory/My Inventory/Body Parts/Extras
+    Found 9 items
+      [OK] Unpack - ADDONS - lel EvoX BOM
+      [OK] Unpack - ADDONS - LeLUTKA Classic BOM (f)
+      [OK] Unpack - ADDONS - lel EvoX BOM
+      [OK] Unpack - ADDONS - LeLUTKA Classic BOM (f)
+      [OK] Unpack - ADDONS - lel EvoX BOM
+      [OK] Unpack - ADDONS - LeLUTKA Classic BOM (f)
+      [OK] AO Cecilia Ad Portrait
+      [OK] Typing Override Cecilia Ad
+      [OK] AO Cecilia Ad Landscape
+  📁 AVEC TOI/
+    Creating: /My Inventory/My Inventory/Body Parts/AVEC TOI
+    Found 1 items
+    📁 Betty Corset TEMPEST PACK ((maitreya))/
+    Creating: /My Inventory/My Inventory/Body Parts/AVEC TOI/Betty Corset TEMPEST PACK ((maitreya))
+      Found 3 items
+      📁 HUDs/

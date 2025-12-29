@@ -162,7 +162,15 @@ def execute_folder_move(source_path: str, target_path: str, dry_run: bool = True
         print(f"  [DRY RUN] Would create: {target_path}")
     
     # List source folder contents
-    full_source = source_path if source_path.startswith('/') else f'/My Inventory/{source_path}'
+    # Handle various path formats
+    if source_path.startswith('/My Inventory/'):
+        full_source = source_path
+    elif source_path.startswith('My Inventory/'):
+        full_source = '/' + source_path
+    elif source_path.startswith('/'):
+        full_source = source_path
+    else:
+        full_source = f'/My Inventory/{source_path}'
     items = list_folder(full_source)
     
     if not items:
@@ -180,7 +188,15 @@ def execute_folder_move(source_path: str, target_path: str, dry_run: bool = True
             stats['skipped'] += 1
             continue
         
-        full_target = target_path if target_path.startswith('/') else f'/My Inventory/{target_path}'
+        # Handle various path formats for target
+        if target_path.startswith('/My Inventory/'):
+            full_target = target_path
+        elif target_path.startswith('My Inventory/'):
+            full_target = '/' + target_path
+        elif target_path.startswith('/'):
+            full_target = target_path
+        else:
+            full_target = f'/My Inventory/{target_path}'
         
         if dry_run:
             print(f"    [DRY RUN] Would move: {item['name']} -> {target_path}")
