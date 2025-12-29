@@ -1,0 +1,21 @@
+{
+  "target_path": "BDSM/Equipment",
+  "description": "Move folders to BDSM/Equipment",
+  "folders": [
+    {
+      "name": "NGW helene hood box V2",
+      "uuid": "6458585a-ca14-39c6-bf19-0136dce393bc",
+      "path": "My Inventory/NGW helene hood box V2",
+      "item_count": 1,
+      "child_count": 0
+    },
+    {
+      "name": "NGW compact armbinder 1.3 rlv",
+      "uuid": "c702ebc0-f2f0-34f3-bd61-a96b42ab5236",
+      "path": "My Inventory/NGW compact armbinder 1.3 rlv",
+      "item_count": 8,
+      "child_count": 0
+    }
+  ],
+  "status": "pending"
+}

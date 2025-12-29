@@ -1,0 +1,16 @@
+{
+  "target_path": "Body Parts/Hair",
+  "description": "Move hair folders to Body Parts/Hair",
+  "folders": [
+    {
+      "name": "KUNI - Sharon (Color HUD Pack) (v3)",
+      "uuid": "8f8cd403-49b8-1f61-766d-55968203dd48",
+      "path": "My Inventory/KUNI - Sharon (Color HUD Pack) (v3)",
+      "item_count": 2,
+      "child_count": 0,
+      "note": "Hair product by KUNI"
+    }
+  ],
+  "status": "pending"
+}
+

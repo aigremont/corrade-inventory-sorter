@@ -1,0 +1,28 @@
+{
+  "target_path": "NEEDS_MERGE",
+  "description": "Folders that need their CONTENTS merged into system folders, not just moved",
+  "folders": [
+    {
+      "name": "Apparel",
+      "uuid": "0862e6dd-41a3-4f5e-89a6-e086224d29bc",
+      "path": "My Inventory/Apparel",
+      "item_count": 0,
+      "child_count": 4,
+      "note": "Contains Hair, Clothing, Shoes subfolders - contents should merge into Body Parts/Hair, Clothing, Clothing/Shoes respectively",
+      "merge_plan": {
+        "Apparel/Hair": "Body Parts/Hair",
+        "Apparel/Clothing": "Clothing",
+        "Apparel/Shoes": "Clothing/Shoes"
+      }
+    },
+    {
+      "name": "Avatar",
+      "uuid": "e5f8e9aa-4eac-44de-a6ad-05f8db639d86",
+      "path": "My Inventory/Avatar",
+      "item_count": 0,
+      "child_count": 1,
+      "note": "Contains Body Parts subfolder - contents should merge into system Body Parts folder"
+    }
+  ],
+  "status": "needs_special_handling"
+}

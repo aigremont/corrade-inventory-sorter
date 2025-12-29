@@ -1,0 +1,14 @@
+{
+  "target_path": "Objects/Utilities",
+  "description": "Move folders to Objects/Utilities",
+  "folders": [
+    {
+      "name": "[chouette] Auto Teleporter HUD",
+      "uuid": "f30998d9-2439-6b71-8337-a96790bbfd1f",
+      "path": "My Inventory/[chouette] Auto Teleporter HUD",
+      "item_count": 1,
+      "child_count": 0
+    }
+  ],
+  "status": "pending"
+}
