@@ -357,8 +357,15 @@ class CorradeInventorySorter:
             SortRule(
                 name="BDSM Brands",
                 target_path="BDSM",
-                # Note: \* escapes literal asterisks, brands often use *Brand* or ~Brand~ patterns
-                matcher=regex_matcher(r'(\*HDM\*|HDM|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
+                # Note: \* escapes literal asterisks for *HDM* pattern
+                matcher=regex_matcher(r'(\*HDM\*|\bHDM\b|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
+                priority=87
+            ),
+            # BDSM Animations
+            SortRule(
+                name="BDSM Animations",
+                target_path="Animations/BDSM",
+                matcher=keyword_matcher(['BDSM animations', 'BDSM anim', 'bondage animations']),
                 priority=87
             ),
             # Corsets go to BDSM/Clothing/Corsets (match on product type, not brand)
@@ -429,6 +436,13 @@ class CorradeInventorySorter:
                 ]),
                 priority=75
             ),
+            # Shoe brands (erratic, etc.)
+            SortRule(
+                name="Shoe Brands",
+                target_path="Clothing/Shoes",
+                matcher=regex_matcher(r'\berratic\b'),
+                priority=74
+            ),
             
             # Clothing
             SortRule(
@@ -490,6 +504,13 @@ class CorradeInventorySorter:
                 matcher=keyword_matcher(['Skin', 'Skins', 'Body Skin', 'Head Skin', 'BOM Skin']),
                 priority=62
             ),
+            # Specific skin brands (these primarily make skins)
+            SortRule(
+                name="Skin Brands",
+                target_path="Body Parts/Skins",
+                matcher=regex_matcher(r'(VELOUR|Pepe Skins|Ipanema Body)'),
+                priority=62
+            ),
             
             # Body Parts - generic (lower priority)
             SortRule(
@@ -501,12 +522,39 @@ class CorradeInventorySorter:
                 priority=60
             ),
             
+            # Body Accessories (piercings, nipple rings, etc.)
+            SortRule(
+                name="Body Accessories",
+                target_path="Body Parts/Accessories",
+                matcher=keyword_matcher(['nipple rings', 'nipple piercing', 'piercing', 'body jewelry', 'belly ring']),
+                priority=61
+            ),
+            
             # Tattoos
             SortRule(
                 name="Tattoos",
                 target_path="Body Parts/Tattoos",
                 matcher=keyword_matcher(['tattoo', 'tattoos', 'tat', 'barcode']),
                 priority=59
+            ),
+            
+            # Utility HUDs (teleporters, pose adjusters, etc.)
+            SortRule(
+                name="Utility HUDs",
+                target_path="Objects/Utilities",
+                matcher=keyword_matcher([
+                    'Teleporter', 'Auto Teleporter', 'Pose Adjuster', 'Resizer',
+                    'Animator', 'Face Light', 'AO HUD'
+                ]),
+                priority=55
+            ),
+            
+            # OMY is generally animations
+            SortRule(
+                name="OMY Animations",
+                target_path="Animations",
+                matcher=regex_matcher(r'\bOMY\b'),
+                priority=54
             ),
             
             # Furniture & Decor
@@ -519,6 +567,14 @@ class CorradeInventorySorter:
                     'Mirror', 'Plant', 'Vase'
                 ]),
                 priority=50
+            ),
+            
+            # Uncertain boxed items that need manual review
+            SortRule(
+                name="Check Items",
+                target_path="Objects/Check",
+                matcher=regex_matcher(r'(Unpacker|unpack|rez to unpack|wear.*unpack)'),
+                priority=40
             ),
         ]
         
