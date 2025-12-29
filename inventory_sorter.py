@@ -343,22 +343,39 @@ class CorradeInventorySorter:
             ),
             
             # BDSM/Kink items - high priority to catch before generic clothing
+            # Equipment = physical restraints (hoods, armbinders, cuffs, etc.)
+            SortRule(
+                name="BDSM Equipment",
+                target_path="BDSM/Equipment",
+                matcher=keyword_matcher([
+                    'hood', 'armbinder', 'gag', 'muzzle', 'blindfold',
+                    'cuff', 'cuffs', 'spreader', 'straitjacket', 'chastity',
+                    'restraint', 'bondage'
+                ]),
+                priority=89
+            ),
+            # BDSM Restraints (collars, leashes, harnesses)
             SortRule(
                 name="BDSM Restraints",
                 target_path="BDSM",
                 matcher=keyword_matcher([
-                    'KDC', 'collar', 'cuff', 'cuffs', 'hood', 'gag', 'muzzle',
-                    'chastity', 'straitjacket', 'restraint', 'bondage',
-                    'leash', 'blindfold', 'armbinder', 'spreader', 'harness',
+                    'KDC', 'collar', 'leash', 'harness',
                     'prisoner', 'prison', 'slave', 'submissa'
                 ]),
                 priority=88
+            ),
+            # NGW makes equipment (hoods, armbinders) - higher priority to route to Equipment
+            SortRule(
+                name="NGW Equipment",
+                target_path="BDSM/Equipment",
+                matcher=regex_matcher(r'\bNGW\b'),
+                priority=89
             ),
             SortRule(
                 name="BDSM Brands",
                 target_path="BDSM",
                 # Note: \* escapes literal asterisks for *HDM* pattern
-                matcher=regex_matcher(r'(\*HDM\*|\bHDM\b|NGW|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
+                matcher=regex_matcher(r'(\*HDM\*|\bHDM\b|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
                 priority=87
             ),
             # BDSM Animations

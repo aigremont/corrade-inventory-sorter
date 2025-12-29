@@ -4,8 +4,8 @@
 
 ## Summary
 - **Completed sorts**: 150+ items moved across multiple passes
-- **Empty folders cleaned**: 8 deleted
-- **Remaining at root**: 18 folders
+- **Empty folders cleaned**: 8 deleted by sorter + 5 deleted manually
+- **Remaining at root**: ~10 folders (user working through list)
 
 ---
 
@@ -15,72 +15,72 @@
 The sorter fails on folder names containing special characters that break API paths.
 
 **Affected folders:**
-- `Pepe Skins - Lelu X \/ Peach V2 \/ Moonbeam` (forward slashes)
-- `erratic \/ ciri - cuban heel \/ FATPACK` (forward slashes)
-- `2faces - ""UNA"" - full pack` (double quotes)
+- ~~`Pepe Skins - Lelu X \/ Peach V2 \/ Moonbeam`~~ ✓ moved manually
+- ~~`erratic \/ ciri - cuban heel \/ FATPACK`~~ ✓ deleted (were stockings)
+- ~~`2faces - ""UNA"" - full pack`~~ ✓ renamed (outfit)
 - `VELOUR: The ""Ipanema Body""` (colon and double quotes)
-- `[chouette] Auto Teleporter HUD (wear\/rez to unpack)` (escaped slashes)
-- `++ kuromori ++` (plus signs)
-- `Aleph\null Welcome Package` (backslash/null)
+- ~~`[chouette] Auto Teleporter HUD (wear\/rez to unpack)`~~ ✓ renamed
+- ~~`++ kuromori ++`~~ ✓ renamed
+- ~~`Aleph\null Welcome Package`~~ ✓ deleted
 
 **Fix needed:** Sanitize folder names before API calls, escape or URL-encode special characters.
 
 ---
 
-### 2. HDM Regex Not Matching
+### 2. ~~HDM Regex Not Matching~~ ✓ RESOLVED
 **Affected folders:**
-- `*HDM* Nilea - open body v2.6.0b for Maitreya (unpacked)`
-- `*HDM* Nilea - the kink add-on v2.6.0c for Maitreya (unpacked)`
+- ~~`*HDM* Nilea - open body v2.6.0b for Maitreya (unpacked)`~~ ✓ deleted
+- ~~`*HDM* Nilea - the kink add-on v2.6.0c for Maitreya (unpacked)`~~ ✓ deleted
 
-**Issue:** Despite regex `\*HDM\*`, these aren't matching. May need to check normalization or matching logic.
+~~**Issue:** Despite regex `\*HDM\*`, these aren't matching.~~
 
-**Destination:** BDSM/HDM/
+User deleted manually.
 
 ---
 
 ## Manual Categorization Needed
 
-### 3. Boxed BDSM Items → Objects/Check
-Per user: boxed items that look like unpackers go to Objects/Check for manual review.
+### 3. ~~Boxed BDSM Items~~ NGW Items → BDSM
+These aren't boxed - they're actual BDSM equipment:
 
-- [ ] `NGW helene hood box V2`
-- [ ] `NGW compact armbinder 1.3 rlv + (mait...` (truncated name)
-- [ ] `CryBunBun - [Submissa Harness] [FATPACK] Unpacker HUD (reborn)`
+- [ ] `NGW helene hood box V2` → BDSM (alpha for helene hood)
+- [ ] `NGW compact armbinder` → BDSM/Equipment
+- [x] `CryBunBun - [Submissa Harness]` ✓ deleted
 
 ---
 
 ### 4. Skins → Body Parts/Skins
 Once path encoding is fixed:
 
-- [ ] `Pepe Skins - Lelu X \/ Peach V2 \/ Moonbeam`
+- [x] `Pepe Skins - Lelu X \/ Peach V2 \/ Moonbeam` ✓ moved manually
 - [ ] `VELOUR: The ""Ipanema Body"" for Maitreya (BLUSH)`
 
 ---
 
 ### 5. Shoes → Clothing/Shoes
-Once path encoding is fixed:
+~~Once path encoding is fixed:~~
 
-- [ ] `erratic \/ ciri - cuban heel \/ FATPACK (maitreya) (unpacked)`
+- [x] `erratic \/ ciri - cuban heel` ✓ deleted (were stockings, not shoes)
 
 ---
 
 ### 6. Body Deformers → Body Parts/Bodies
-- [ ] `++ kuromori ++ ebody reborn butt fixer deformer`
+- [x] `++ kuromori ++` ✓ renamed manually
 
 ---
 
 ### 7. Utility HUD → Objects/Utilities or Check
-- [ ] `[chouette] Auto Teleporter HUD (wear\/rez to unpack) (v1.02)`
+- [x] `[chouette] Auto Teleporter HUD` ✓ renamed manually
 
 ---
 
 ### 8. Unknown/Needs Investigation
 These need manual inspection to determine category:
 
-- [ ] `Aleph\null Welcome Package` - Freebie/welcome pack?
+- [x] `Aleph\null Welcome Package` ✓ deleted
 - [ ] `Size:KaS, bundle (box)` - Unknown product
 - [ ] `Loose` - Loose items folder?
-- [ ] `2faces - ""UNA"" - full pack` - User said 2faces makes clothing, could be outfit
+- [x] `2faces - ""UNA"" - full pack` ✓ renamed (outfit)
 - [ ] `KUNI - Sharon (Color HUD Pack) (v3)` - Color HUD for what product?
 - [ ] `GIFT LOCATION` - Landmark/location info?
 - [ ] `RR Update folder` - RealRestraint updates → BDSM?
@@ -106,4 +106,12 @@ These need manual inspection to determine category:
 - [x] Pantyhose → Clothing/Hosiery
 - [x] Aphasia/Ideeen BDSM → BDSM/
 - [x] Empty folder cleanup (8 folders deleted)
+- [x] Pepe Skins → moved manually
+- [x] erratic ciri → deleted (stockings)
+- [x] 2faces UNA → renamed (outfit)
+- [x] chouette teleporter → renamed
+- [x] kuromori → renamed
+- [x] Aleph\null → deleted
+- [x] HDM Nilea items → deleted
+- [x] CryBunBun Submissa Harness → deleted
 
