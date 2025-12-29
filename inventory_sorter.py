@@ -350,8 +350,22 @@ class CorradeInventorySorter:
                 matcher=keyword_matcher([
                     'hood', 'armbinder', 'gag', 'muzzle', 'blindfold',
                     'cuff', 'cuffs', 'spreader', 'straitjacket', 'chastity',
-                    'restraint', 'bondage'
+                    'restraint', 'bondage', 'padlock'
                 ]),
+                priority=89
+            ),
+            # KDC makes BDSM equipment specifically
+            SortRule(
+                name="KDC Equipment",
+                target_path="BDSM/Equipment",
+                matcher=regex_matcher(r'\bKDC\b'),
+                priority=89
+            ),
+            # CC/T&T makes chastity belts
+            SortRule(
+                name="CC Chastity",
+                target_path="BDSM/Equipment",
+                matcher=regex_matcher(r'CC[\/\\]T&T|Chastity Belt'),
                 priority=89
             ),
             # BDSM Restraints (collars, leashes, harnesses)
@@ -359,7 +373,7 @@ class CorradeInventorySorter:
                 name="BDSM Restraints",
                 target_path="BDSM",
                 matcher=keyword_matcher([
-                    'KDC', 'collar', 'leash', 'harness',
+                    'collar', 'leash', 'harness',
                     'prisoner', 'prison', 'slave', 'submissa'
                 ]),
                 priority=88
@@ -375,7 +389,7 @@ class CorradeInventorySorter:
                 name="BDSM Brands",
                 target_path="BDSM",
                 # Note: \* escapes literal asterisks for *HDM* pattern
-                matcher=regex_matcher(r'(\*HDM\*|\bHDM\b|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll)'),
+                matcher=regex_matcher(r'(\*HDM\*|\bHDM\b|Vixen|~?Silenced~?|RR&Co|Bad Bunny|OpenCollar|Realrestraint|Decima|Aphasia|SNUGGLIES|CryBunBun|LnB|BioDoll|Size:KaS|KaS\b)'),
                 priority=87
             ),
             # BDSM Animations
@@ -581,14 +595,15 @@ class CorradeInventorySorter:
                 priority=54
             ),
             
-            # Furniture & Decor
+            # Furniture - goes to Objects/Furniture/Vendor/Item
             SortRule(
-                name="Furniture & Decor",
-                target_path="Home & Decor",
+                name="Furniture",
+                target_path="Objects/Furniture",
                 matcher=keyword_matcher([
-                    'Chair', 'Table', 'Lamp', 'Rug', 'Decor', 'Furniture',
+                    'Chair', 'Table', 'Lamp', 'Rug', 'Furniture',
                     'Sofa', 'Bed', 'Couch', 'Desk', 'Shelf', 'Cabinet',
-                    'Mirror', 'Plant', 'Vase'
+                    'Cage', 'Cross', 'Rack', 'Stocks', 'Pillory', 'Frame',
+                    'Dungeon', 'Throne'
                 ]),
                 priority=50
             ),

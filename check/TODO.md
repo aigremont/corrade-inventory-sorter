@@ -3,9 +3,10 @@
 *Generated: Dec 29, 2025*
 
 ## Summary
-- **Completed sorts**: 150+ items moved across multiple passes
-- **Empty folders cleaned**: 8 deleted by sorter + 5 deleted manually
-- **Remaining at root**: ~10 folders (user working through list)
+- **Completed sorts**: 200+ items moved across multiple passes
+- **BDSM folder organized**: 47 items sorted into Equipment subfolders
+- **Empty folders cleaned**: 12 deleted by sorter + 5 deleted manually
+- **Remaining cleanup**: Merge duplicate Docs and KDC folders in-viewer
 
 ---
 
@@ -40,11 +41,11 @@ User deleted manually.
 
 ## Manual Categorization Needed
 
-### 3. ~~Boxed BDSM Items~~ NGW Items → BDSM
-These aren't boxed - they're actual BDSM equipment:
+### 3. ~~Boxed BDSM Items~~ NGW Items → BDSM ✓ DONE
+These were moved to BDSM/Equipment/NGW:
 
-- [ ] `NGW helene hood box V2` → BDSM (alpha for helene hood)
-- [ ] `NGW compact armbinder` → BDSM/Equipment
+- [x] `XETAL NGW Ohnus hood` variants → BDSM/Equipment/NGW
+- [x] `ngw binder` textures → BDSM/Textures (then deleted - empty)
 - [x] `CryBunBun - [Submissa Harness]` ✓ deleted
 
 ---
@@ -97,19 +98,20 @@ These need manual inspection to determine category:
 
 ---
 
-## BDSM Folder Structure (TODO)
+## BDSM Folder Structure ✓ (DONE)
 
-Current subfolders:
-- `BDSM/Equipment/` - Hoods, armbinders, gags, blindfolds, cuffs
+BDSM folder is now organized. All 47 loose items moved to subfolders:
+- `BDSM/Equipment/KDC/` - KDC hoods, blindfolds, muzzles, cuffs, padlocks, chastity belts
+- `BDSM/Equipment/NGW/` - NGW hoods (including XETAL NGW items)
+- `BDSM/Equipment/CC-TT/` - CC/T&T chastity belts
+- `BDSM/Docs/` - Changelogs and readme files
+- `BDSM/Landmarks/` - Store landmarks (now empty - deleted)
 - `BDSM/Clothing/Corsets/` - Corsets
+- `BDSM/HUDs/` - KDC HUDs and activators
 
-Potential additional subfolders:
-- `BDSM/Collars/` - Collars (currently goes to BDSM root)
-- `BDSM/Harnesses/` - Harnesses
-- `BDSM/Furniture/` - BDSM furniture/equipment
-- `BDSM/Toys/` - Whips, crops, etc.
-
-Need to check what's currently at BDSM root and structure accordingly.
+**Cleanup needed in-viewer:**
+- [ ] Merge duplicate `BDSM/Docs/` folders (2 exist)
+- [ ] Merge duplicate `BDSM/Equipment/KDC/` folders (2 exist)
 
 ---
 
@@ -136,4 +138,6 @@ Need to check what's currently at BDSM root and structure accordingly.
 - [x] RR Update → Objects/Updaters (rule added)
 - [x] Latex → Materials
 - [x] Loose → renamed to "metal" (Materials)
+- [x] BDSM folder organized - 47 items sorted into Equipment/KDC, Equipment/NGW, Equipment/CC-TT, Docs, Landmarks
+- [x] Empty BDSM subfolders deleted - Accessories, Eyes, Textures, Landmarks
 
